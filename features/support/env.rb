@@ -1,13 +1,26 @@
 require 'simplecov'
+
 SimpleCov.start
 # Sinatra
+
 require File.join(File.dirname(__FILE__), *%w[.. .. app])
+
 # Force the application name because polyglot breaks the auto-detection logic.
 Sinatra::Application.app_file = File.join(File.dirname(__FILE__), *%w[.. .. app.rb])
 
 require 'rspec/expectations'
+require 'rspec/core'
 require 'rack/test'
 require 'webrat'
+
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = :should
+  end
+  config.mock_with :rspec do |c|
+    c.syntax = :should
+  end
+end
 
 Webrat.configure do |config|
   config.mode = :rack
@@ -26,4 +39,3 @@ class MyWorld
 end
 
 World{MyWorld.new}
-
