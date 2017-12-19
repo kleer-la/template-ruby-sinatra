@@ -6,24 +6,32 @@ require File.join(File.dirname(__FILE__), *%w[.. .. app])
 Sinatra::Application.app_file = File.join(File.dirname(__FILE__), *%w[.. .. app.rb])
 
 require 'rspec/expectations'
-require 'rack/test'
-require 'webrat'
+require 'capybara/cucumber'
+require 'capybara/poltergeist' #Javascript
 
-Webrat.configure do |config|
-  config.mode = :rack
-end
 
 class MyWorld
-  include Rack::Test::Methods
-  include Webrat::Methods
-  include Webrat::Matchers
-
-  Webrat::Methods.delegate_to_session :response_code, :response_body
-
-  def app
-    Sinatra::Application
-  end
+  include Capybara::DSL
+  include RSpec::Expectations
+  include RSpec::Matchers
 end
+
+Capybara.javascript_driver = :poltergeist
+
+Capybara.register_driver :poltergeist do |app|
+  options = {
+      :js_errors => true,
+      :timeout => 120,
+      :debug => false,
+      :phantomjs_options => ['--load-images=no', '--disk-cache=false'],
+      :inspector => true,
+  }
+
+  Capybara::Poltergeist::Driver.new(app, options)
+
+end
+
+Capybara.app = Sinatra::Application
 
 World{MyWorld.new}
 

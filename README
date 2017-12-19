@@ -1,0 +1,17 @@
+install ruby 2.3
+
+Setup:
+	sudo apt-get install phantomjs
+
+on the project root:
+	gem install bundler
+	bundle install
+
+to run app:
+	ruby app.rb
+
+for unit test:
+	rspec
+
+for acceptance test:
+	cucumber
